@@ -21,6 +21,8 @@ RSS Parser ist eine benutzerdefinierte Home-Assistant-Integration zum Abrufen, F
 
 ## Installation
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mbraunschweiler&repository=HA-RssFeedParser)
+
 ### Als benutzerdefiniertes HACS-Repository
 
 1. HACS in Home Assistant öffnen.
