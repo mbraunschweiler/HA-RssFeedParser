@@ -2,6 +2,8 @@
 
 **Deutsch** | [English](README.md)
 
+> **Hinweis:** Dieser Code wurde mit Unterstützung von KI generiert.
+
 RSS Parser ist eine benutzerdefinierte Home-Assistant-Integration zum Abrufen, Filtern und Versenden von RSS- und Atom-Beiträgen. Sämtliche Einstellungen werden über die Home-Assistant-Oberfläche vorgenommen.
 
 ## Funktionen

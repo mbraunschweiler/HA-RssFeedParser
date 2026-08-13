@@ -2,6 +2,8 @@
 
 [Deutsch](README.de.md) | **English**
 
+> **Note:** This code has been generated with AI assistance.
+
 RSS Parser is a custom Home Assistant integration for polling RSS and Atom feeds, filtering new entries, and forwarding matching entries to notification entities. All runtime configuration is available in the Home Assistant UI.
 
 ## Features
