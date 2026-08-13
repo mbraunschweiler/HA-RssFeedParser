@@ -1,0 +1,86 @@
+{
+  "title": "RSS Parser",
+  "config": {
+    "step": {
+      "user": {
+        "title": "RSS- oder Atom-Feed hinzufügen",
+        "description": "Der Feed wird vor dem Hinzufügen geprüft.",
+        "data": {
+          "feed_name": "Name",
+          "feed_url": "Feed-URL",
+          "send_existing": "Bereits vorhandene Beiträge senden"
+        },
+        "data_description": {
+          "feed_name": "Name, unter dem der Feed in Home Assistant angezeigt wird.",
+          "feed_url": "HTTP- oder HTTPS-Adresse eines RSS- oder Atom-Feeds. URLs mit Zugangsdaten werden nicht akzeptiert.",
+          "send_existing": "Aus wird empfohlen und verhindert beim Einrichten eine Benachrichtigungsflut."
+        }
+      },
+      "reconfigure": {
+        "title": "Feed ändern",
+        "description": "Der neue Feed wird geprüft, bevor die Änderung gespeichert wird.",
+        "data": {
+          "feed_name": "Name",
+          "feed_url": "Feed-URL"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Es konnte keine Verbindung zum Feed hergestellt werden.",
+      "credentials_not_supported": "URLs mit Benutzername oder Passwort werden nicht unterstützt.",
+      "invalid_feed": "Die Antwort ist kein gültiger RSS- oder Atom-Feed.",
+      "invalid_url": "Gib eine gültige HTTP- oder HTTPS-Adresse ein.",
+      "timeout": "Der Feed hat nicht rechtzeitig geantwortet.",
+      "unknown": "Ein unerwarteter Fehler ist aufgetreten."
+    },
+    "abort": {
+      "already_configured": "Dieser Feed ist bereits konfiguriert.",
+      "reconfigure_successful": "Die Feed-Konfiguration wurde aktualisiert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Feed konfigurieren",
+        "description": "Begriffe und Kategorien können mit Kommas oder Zeilenumbrüchen getrennt werden. Bei aktivierten regulären Ausdrücken gilt jeder Eintrag als ein Ausdruck. Verfügbare Platzhalter: `{title}`, `{link}`, `{summary}`, `{author}`, `{feed_name}`, `{published}`.",
+        "data": {
+          "scan_interval": "Abrufintervall (Minuten)",
+          "timeout": "Zeitüberschreitung (Sekunden)",
+          "send_existing": "Vorhandene Beiträge beim ersten Abruf senden",
+          "max_entries": "Maximale neue Beiträge pro Abruf",
+          "include_terms": "Einschlussbegriffe",
+          "exclude_terms": "Ausschlussbegriffe",
+          "case_sensitive": "Gross-/Kleinschreibung beachten",
+          "use_regex": "Reguläre Ausdrücke verwenden",
+          "max_age_hours": "Maximales Beitragsalter (Stunden; 0 deaktiviert)",
+          "include_categories": "Kategorien einschliessen",
+          "exclude_categories": "Kategorien ausschliessen",
+          "notifications_enabled": "Benachrichtigungen senden",
+          "notify_targets": "Benachrichtigungsziele",
+          "notification_mode": "Benachrichtigungsmodus",
+          "notification_title": "Benachrichtigungstitel",
+          "notification_message": "Benachrichtigungstext",
+          "summary_length": "Maximale Länge der Zusammenfassung"
+        }
+      }
+    },
+    "error": {
+      "invalid_regex": "Mindestens ein regulärer Ausdruck ist ungültig."
+    }
+  },
+  "selector": {
+    "notification_mode": {
+      "options": {
+        "individual": "Eine Nachricht pro Beitrag",
+        "digest": "Eine Sammelnachricht pro Abruf"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "latest_entry": {
+        "name": "Letzter Beitrag"
+      }
+    }
+  }
+}

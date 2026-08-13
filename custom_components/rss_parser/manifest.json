@@ -1,0 +1,12 @@
+{
+  "domain": "rss_parser",
+  "name": "RSS Parser",
+  "codeowners": ["@mbraunschweiler"],
+  "config_flow": true,
+  "documentation": "https://github.com/mbraunschweiler/HA-RssFeedParser",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/mbraunschweiler/HA-RssFeedParser/issues",
+  "requirements": ["feedparser==6.0.12"],
+  "version": "0.1.0"
+}

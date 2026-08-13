@@ -1,0 +1,86 @@
+{
+  "title": "RSS Parser",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add RSS or Atom feed",
+        "description": "The feed is tested before it is added.",
+        "data": {
+          "feed_name": "Name",
+          "feed_url": "Feed URL",
+          "send_existing": "Send entries already in the feed"
+        },
+        "data_description": {
+          "feed_name": "Name shown for this feed in Home Assistant.",
+          "feed_url": "HTTP or HTTPS URL of an RSS or Atom feed. URLs containing credentials are not accepted.",
+          "send_existing": "Off is recommended and prevents a notification flood during initial setup."
+        }
+      },
+      "reconfigure": {
+        "title": "Change feed",
+        "description": "The new feed is tested before the change is saved.",
+        "data": {
+          "feed_name": "Name",
+          "feed_url": "Feed URL"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the feed.",
+      "credentials_not_supported": "URLs containing a user name or password are not supported.",
+      "invalid_feed": "The response is not a valid RSS or Atom feed.",
+      "invalid_url": "Enter a valid HTTP or HTTPS URL.",
+      "timeout": "The feed did not respond in time.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This feed is already configured.",
+      "reconfigure_successful": "The feed configuration was updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure feed",
+        "description": "Terms and categories can be separated by commas or new lines. With regular expressions enabled, every item is interpreted as one expression. Available message placeholders: `{title}`, `{link}`, `{summary}`, `{author}`, `{feed_name}`, `{published}`.",
+        "data": {
+          "scan_interval": "Polling interval (minutes)",
+          "timeout": "Request timeout (seconds)",
+          "send_existing": "Send existing entries on the first poll",
+          "max_entries": "Maximum new entries per poll",
+          "include_terms": "Include terms",
+          "exclude_terms": "Exclude terms",
+          "case_sensitive": "Case-sensitive filters",
+          "use_regex": "Use regular expressions",
+          "max_age_hours": "Maximum entry age (hours; 0 disables)",
+          "include_categories": "Include categories",
+          "exclude_categories": "Exclude categories",
+          "notifications_enabled": "Send notifications",
+          "notify_targets": "Notification targets",
+          "notification_mode": "Notification mode",
+          "notification_title": "Notification title",
+          "notification_message": "Notification message",
+          "summary_length": "Maximum summary length"
+        }
+      }
+    },
+    "error": {
+      "invalid_regex": "At least one regular expression is invalid."
+    }
+  },
+  "selector": {
+    "notification_mode": {
+      "options": {
+        "individual": "One message per entry",
+        "digest": "One combined message per poll"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "latest_entry": {
+        "name": "Latest entry"
+      }
+    }
+  }
+}
