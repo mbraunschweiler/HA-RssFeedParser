@@ -1,4 +1,6 @@
 {
   "name": "RSS Parser",
+  "content_in_root": false,
+  "render_readme": false,
   "homeassistant": "2026.6.0"
 }
