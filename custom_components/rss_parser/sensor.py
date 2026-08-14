@@ -22,11 +22,13 @@ async def async_setup_entry(
 ) -> None:
     """Set up the feed sensors."""
     coordinator = entry.runtime_data.coordinator
-    async_add_entities([
-        RssParserSensor(coordinator, entry),
-        RssParserNewEntriesSensor(coordinator, entry),
-        RssParserDiscardedSensor(coordinator, entry),
-    ])
+    async_add_entities(
+        [
+            RssParserSensor(coordinator, entry),
+            RssParserNewEntriesSensor(coordinator, entry),
+            RssParserDiscardedSensor(coordinator, entry),
+        ]
+    )
 
 
 class RssParserSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):

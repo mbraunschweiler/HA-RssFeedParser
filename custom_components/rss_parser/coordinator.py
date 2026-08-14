@@ -115,7 +115,6 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
             )
         return CoordinatorData(latest, accepted_tuple, parsed.title, discarded_count)
 
-
     def _handle_success(self) -> None:
         if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
             ir.async_delete_issue(self.hass, DOMAIN, REPAIR_ISSUE_FEED_UNAVAILABLE)
