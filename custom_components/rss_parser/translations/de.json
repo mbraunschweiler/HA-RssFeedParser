@@ -82,6 +82,11 @@
         "name": "Aktualisieren"
       }
     },
+    "button": {
+      "refresh": {
+        "name": "Aktualisieren"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Letzter Beitrag"
@@ -91,6 +96,9 @@
       },
       "discarded_count": {
         "name": "Verworfene Beitr\u00e4ge"
+      },
+      "next_refresh": {
+        "name": "N\u00e4chste Aktualisierung"
       }
     }
   },

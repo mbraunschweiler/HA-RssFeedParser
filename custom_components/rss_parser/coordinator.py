@@ -51,6 +51,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         self.last_modified: str | None = None
         self.feed_title = str(entry.data[CONF_FEED_NAME])
         self._consecutive_failures: int = 0
+        self.next_refresh_at: datetime | None = None
         interval = int(entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         super().__init__(
             hass,
@@ -70,6 +71,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
             )
             if result.not_modified:
                 self._handle_success()
+                self._handle_success()
                 return CoordinatorData(self.store.latest_entry, (), self.feed_title)
             assert result.content is not None
             parsed = await self.hass.async_add_executor_job(
@@ -79,8 +81,10 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
             )
         except (FeedClientError, FeedParseError, TimeoutError) as err:
             self._handle_failure()
+            self._handle_failure()
             raise UpdateFailed(f"Unable to update feed: {err}") from err
 
+        self._handle_success()
         self._handle_success()
         self.etag = result.etag
         self.last_modified = result.last_modified
@@ -101,6 +105,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         limit = int(self.entry.options.get(CONF_MAX_ENTRIES, DEFAULT_MAX_ENTRIES))
         accepted_tuple = tuple(accepted[-limit:])
         discarded_count = len(all_unseen) - len(accepted_tuple)
+        discarded_count = len(all_unseen) - len(accepted_tuple)
         latest = accepted_tuple[-1] if accepted_tuple else self.store.latest_entry
 
         # Mark every observed entry so permanently filtered entries are not reconsidered
@@ -119,9 +124,11 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
             ir.async_delete_issue(self.hass, DOMAIN, REPAIR_ISSUE_FEED_UNAVAILABLE)
         self._consecutive_failures = 0
+        self.next_refresh_at = datetime.now(UTC) + self.update_interval
 
     def _handle_failure(self) -> None:
         self._consecutive_failures += 1
+        self.next_refresh_at = datetime.now(UTC) + self.update_interval
         if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
             ir.async_create_issue(
                 self.hass,

@@ -82,6 +82,11 @@
         "name": "Refresh"
       }
     },
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Latest entry"
@@ -91,6 +96,9 @@
       },
       "discarded_count": {
         "name": "Discarded entries"
+      },
+      "next_refresh": {
+        "name": "Next refresh"
       }
     }
   },
