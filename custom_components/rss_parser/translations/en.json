@@ -91,6 +91,9 @@
       },
       "discarded_count": {
         "name": "Discarded entries"
+      },
+      "next_refresh": {
+        "name": "Next refresh"
       }
     }
   },

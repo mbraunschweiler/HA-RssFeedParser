@@ -15,6 +15,11 @@ RSS Parser is a custom Home Assistant integration for polling RSS and Atom feeds
 - Persistent duplicate detection across Home Assistant restarts
 - Individual or combined notifications through `notify.send_message`
 - Sensor containing the latest matching entry
+- Sensor for the number of new entries accepted in the last poll
+- Sensor for the number of entries discarded by filters in the last poll
+- Sensor showing when the next feed poll is scheduled
+- Button to trigger an immediate feed refresh
+- Repair hint after repeated fetch failures
 - `rss_parser_new_entry` event for custom automations
 - Conditional HTTP requests using `ETag` and `Last-Modified`
 - English and German UI
@@ -77,6 +82,22 @@ Messages support these safe placeholders:
 - `{published}`
 
 No Jinja expressions are evaluated.
+
+## Entities
+
+Each configured feed creates one device with the following entities.
+
+| Entity | Type | Description |
+|---|---|---|
+| Latest entry | Sensor | Title of the last accepted entry; attributes contain link, summary, author, categories, and published date |
+| New entries | Sensor | Number of entries accepted during the last poll |
+| Discarded entries | Sensor | Number of new entries rejected by filters during the last poll (in memory only, not recorded) |
+| Next refresh | Sensor | Timestamp of the next scheduled poll |
+| Refresh | Button | Triggers an immediate feed poll |
+
+## Repair hints
+
+If a feed cannot be fetched for three consecutive polls, Home Assistant raises a repair issue in **Settings > System > Repairs**. The issue is resolved automatically once the feed becomes reachable again.
 
 ## Automation event
 

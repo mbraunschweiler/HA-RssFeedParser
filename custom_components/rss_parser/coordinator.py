@@ -51,6 +51,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         self.last_modified: str | None = None
         self.feed_title = str(entry.data[CONF_FEED_NAME])
         self._consecutive_failures: int = 0
+        self.next_refresh_at: datetime | None = None
         interval = int(entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         super().__init__(
             hass,
@@ -119,9 +120,11 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
             ir.async_delete_issue(self.hass, DOMAIN, REPAIR_ISSUE_FEED_UNAVAILABLE)
         self._consecutive_failures = 0
+        self.next_refresh_at = datetime.now(UTC) + self.update_interval
 
     def _handle_failure(self) -> None:
         self._consecutive_failures += 1
+        self.next_refresh_at = datetime.now(UTC) + self.update_interval
         if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
             ir.async_create_issue(
                 self.hass,

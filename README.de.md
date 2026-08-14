@@ -15,6 +15,11 @@ RSS Parser ist eine benutzerdefinierte Home-Assistant-Integration zum Abrufen, F
 - Persistente Duplikaterkennung über Home-Assistant-Neustarts hinweg
 - Einzel- oder Sammelbenachrichtigungen über `notify.send_message`
 - Sensor mit dem letzten passenden Beitrag
+- Sensor für die Anzahl neuer Beiträge beim letzten Abruf
+- Sensor für die Anzahl durch Filter verworfener Beiträge beim letzten Abruf
+- Sensor mit dem Zeitpunkt des nächsten geplanten Abrufs
+- Schaltfläche für einen manuellen Sofortabruf
+- Reparaturhinweis bei wiederholten Abruffehlern
 - Ereignis `rss_parser_new_entry` für eigene Automationen
 - Bedingte HTTP-Abfragen mit `ETag` und `Last-Modified`
 - Deutsche und englische Benutzeroberfläche
@@ -79,6 +84,22 @@ Für Titel und Nachricht stehen folgende sichere Platzhalter zur Verfügung:
 - `{published}` – Veröffentlichungszeitpunkt
 
 Es werden keine Jinja-Ausdrücke ausgewertet.
+
+## Entitäten
+
+Für jeden konfigurierten Feed wird ein Gerät mit folgenden Entitäten angelegt.
+
+| Entität | Typ | Beschreibung |
+|---|---|---|
+| Letzter Beitrag | Sensor | Titel des letzten akzeptierten Beitrags; Attribute enthalten Link, Zusammenfassung, Autor, Kategorien und Datum |
+| Neue Beiträge | Sensor | Anzahl der beim letzten Abruf akzeptierten Beiträge |
+| Verworfene Beiträge | Sensor | Anzahl der beim letzten Abruf durch Filter abgelehnten Beiträge (nur im Speicher, nicht aufgezeichnet) |
+| Nächste Aktualisierung | Sensor | Zeitpunkt des nächsten geplanten Abrufs |
+| Aktualisieren | Schaltfläche | Löst einen sofortigen Abruf des Feeds aus |
+
+## Reparaturhinweise
+
+Kann ein Feed dreimal hintereinander nicht abgerufen werden, erstellt Home Assistant einen Reparaturhinweis unter **Einstellungen > System > Reparaturen**. Der Hinweis wird automatisch aufgelöst, sobald der Feed wieder erreichbar ist.
 
 ## Ereignis für Automationen
 

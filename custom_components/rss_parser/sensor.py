@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -27,6 +28,7 @@ async def async_setup_entry(
             RssParserSensor(coordinator, entry),
             RssParserNewEntriesSensor(coordinator, entry),
             RssParserDiscardedSensor(coordinator, entry),
+            RssParserNextRefreshSensor(coordinator, entry),
         ]
     )
 
@@ -125,3 +127,28 @@ class RssParserDiscardedSensor(CoordinatorEntity[RssParserCoordinator], SensorEn
     @property
     def native_value(self) -> int:
         return self.coordinator.data.discarded_count
+
+
+class RssParserNextRefreshSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):
+    """Timestamp of the next scheduled feed poll."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "next_refresh"
+    _attr_icon = "mdi:clock-outline"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    def __init__(
+        self, coordinator: RssParserCoordinator, entry: RssParserConfigEntry
+    ) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_next_refresh"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=str(entry.data[CONF_FEED_NAME]),
+            manufacturer="RSS Parser",
+            model="RSS/Atom Feed",
+        )
+
+    @property
+    def native_value(self) -> datetime | None:
+        return self.coordinator.next_refresh_at

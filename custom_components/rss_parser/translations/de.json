@@ -91,6 +91,9 @@
       },
       "discarded_count": {
         "name": "Verworfene Beitr\u00e4ge"
+      },
+      "next_refresh": {
+        "name": "N\u00e4chste Aktualisierung"
       }
     }
   },
