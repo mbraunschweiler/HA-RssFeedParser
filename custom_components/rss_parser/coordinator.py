@@ -19,9 +19,12 @@ from .const import (
     DEFAULT_MAX_ENTRIES,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    DOMAIN,
     EVENT_NEW_ENTRY,
     MAX_CONSECUTIVE_FAILURES,
+    MAX_CONSECUTIVE_FAILURES,
     MAX_SEEN_IDS,
+    REPAIR_ISSUE_FEED_UNAVAILABLE,
     REPAIR_ISSUE_FEED_UNAVAILABLE,
 )
 from .feed_client import FeedClient, FeedClientError
@@ -71,6 +74,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
             )
             if result.not_modified:
                 self._handle_success()
+                self._handle_success()
                 return CoordinatorData(self.store.latest_entry, (), self.feed_title)
             assert result.content is not None
             parsed = await self.hass.async_add_executor_job(
@@ -80,8 +84,10 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
             )
         except (FeedClientError, FeedParseError, TimeoutError) as err:
             self._handle_failure()
+            self._handle_failure()
             raise UpdateFailed(f"Unable to update feed: {err}") from err
 
+        self._handle_success()
         self._handle_success()
         self.etag = result.etag
         self.last_modified = result.last_modified
@@ -101,6 +107,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         accepted.sort(key=_sort_key)
         limit = int(self.entry.options.get(CONF_MAX_ENTRIES, DEFAULT_MAX_ENTRIES))
         accepted_tuple = tuple(accepted[-limit:])
+        discarded_count = len(all_unseen) - len(accepted_tuple)
         discarded_count = len(all_unseen) - len(accepted_tuple)
         latest = accepted_tuple[-1] if accepted_tuple else self.store.latest_entry
 

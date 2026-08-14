@@ -82,6 +82,11 @@
         "name": "Aktualisieren"
       }
     },
+    "button": {
+      "refresh": {
+        "name": "Aktualisieren"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Letzter Beitrag"

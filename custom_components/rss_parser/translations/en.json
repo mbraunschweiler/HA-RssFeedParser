@@ -82,6 +82,11 @@
         "name": "Refresh"
       }
     },
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Latest entry"
