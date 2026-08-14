@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -17,8 +18,11 @@ from .const import (
     CONF_SEND_EXISTING,
     DEFAULT_MAX_ENTRIES,
     DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
     EVENT_NEW_ENTRY,
+    MAX_CONSECUTIVE_FAILURES,
     MAX_SEEN_IDS,
+    REPAIR_ISSUE_FEED_UNAVAILABLE,
 )
 from .feed_client import FeedClient, FeedClientError
 from .filters import EntryFilter
@@ -46,6 +50,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         self.etag: str | None = None
         self.last_modified: str | None = None
         self.feed_title = str(entry.data[CONF_FEED_NAME])
+        self._consecutive_failures: int = 0
         interval = int(entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
         super().__init__(
             hass,
@@ -64,6 +69,7 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
                 last_modified=self.last_modified,
             )
             if result.not_modified:
+                self._handle_success()
                 return CoordinatorData(self.store.latest_entry, (), self.feed_title)
             assert result.content is not None
             parsed = await self.hass.async_add_executor_job(
@@ -72,8 +78,10 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
                 str(self.entry.data[CONF_FEED_NAME]),
             )
         except (FeedClientError, FeedParseError, TimeoutError) as err:
+            self._handle_failure()
             raise UpdateFailed(f"Unable to update feed: {err}") from err
 
+        self._handle_success()
         self.etag = result.etag
         self.last_modified = result.last_modified
         self.feed_title = parsed.title
@@ -92,18 +100,41 @@ class RssParserCoordinator(DataUpdateCoordinator[CoordinatorData]):
         accepted.sort(key=_sort_key)
         limit = int(self.entry.options.get(CONF_MAX_ENTRIES, DEFAULT_MAX_ENTRIES))
         accepted_tuple = tuple(accepted[-limit:])
+        discarded_count = len(all_unseen) - len(accepted_tuple)
         latest = accepted_tuple[-1] if accepted_tuple else self.store.latest_entry
 
         # Mark every observed entry so permanently filtered entries are not reconsidered
         # during every poll. Changing filters applies to entries received afterwards.
         await self.store.async_mark_processed(candidates, latest)
 
-        for item in accepted_tuple:
-            self.hass.bus.async_fire(EVENT_NEW_ENTRY, item.event_data())
-        await async_send_notifications(
-            self.hass, accepted_tuple, dict(self.entry.options)
-        )
-        return CoordinatorData(latest, accepted_tuple, parsed.title)
+        if accepted_tuple:
+            for item in accepted_tuple:
+                self.hass.bus.async_fire(EVENT_NEW_ENTRY, item.event_data())
+            await async_send_notifications(
+                self.hass, accepted_tuple, dict(self.entry.options)
+            )
+        return CoordinatorData(latest, accepted_tuple, parsed.title, discarded_count)
+
+    def _handle_success(self) -> None:
+        if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+            ir.async_delete_issue(self.hass, DOMAIN, REPAIR_ISSUE_FEED_UNAVAILABLE)
+        self._consecutive_failures = 0
+
+    def _handle_failure(self) -> None:
+        self._consecutive_failures += 1
+        if self._consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+            ir.async_create_issue(
+                self.hass,
+                DOMAIN,
+                REPAIR_ISSUE_FEED_UNAVAILABLE,
+                is_fixable=False,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key=REPAIR_ISSUE_FEED_UNAVAILABLE,
+                translation_placeholders={
+                    "feed_name": self.feed_title,
+                    "feed_url": str(self.entry.data[CONF_FEED_URL]),
+                },
+            )
 
 
 def _sort_key(entry: FeedEntry) -> datetime:

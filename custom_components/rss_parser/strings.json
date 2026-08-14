@@ -77,10 +77,27 @@
     }
   },
   "entity": {
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Latest entry"
+      },
+      "new_entries_count": {
+        "name": "New entries"
+      },
+      "discarded_count": {
+        "name": "Discarded entries"
       }
+    }
+  },
+  "issues": {
+    "feed_unavailable": {
+      "title": "Feed \u201c{feed_name}\u201d is unreachable",
+      "description": "The feed \u201c{feed_name}\u201d ({feed_url}) could not be fetched after several consecutive attempts. Check the URL and your network connection, then reconfigure the feed."
     }
   }
 }

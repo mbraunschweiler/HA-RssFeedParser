@@ -20,8 +20,15 @@ async def async_setup_entry(
     entry: RssParserConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the feed sensor."""
-    async_add_entities([RssParserSensor(entry.runtime_data.coordinator, entry)])
+    """Set up the feed sensors."""
+    coordinator = entry.runtime_data.coordinator
+    async_add_entities(
+        [
+            RssParserSensor(coordinator, entry),
+            RssParserNewEntriesSensor(coordinator, entry),
+            RssParserDiscardedSensor(coordinator, entry),
+        ]
+    )
 
 
 class RssParserSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):
@@ -70,3 +77,51 @@ class RssParserSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):
             }
         )
         return attributes
+
+
+class RssParserNewEntriesSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):
+    """Count of new entries accepted in the last poll."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "new_entries_count"
+    _attr_icon = "mdi:rss-box"
+
+    def __init__(
+        self, coordinator: RssParserCoordinator, entry: RssParserConfigEntry
+    ) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_new_entries_count"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=str(entry.data[CONF_FEED_NAME]),
+            manufacturer="RSS Parser",
+            model="RSS/Atom Feed",
+        )
+
+    @property
+    def native_value(self) -> int:
+        return len(self.coordinator.data.new_entries)
+
+
+class RssParserDiscardedSensor(CoordinatorEntity[RssParserCoordinator], SensorEntity):
+    """Count of new feed entries discarded by filters in the last poll."""
+
+    _attr_has_entity_name = True
+    _attr_translation_key = "discarded_count"
+    _attr_icon = "mdi:filter-remove"
+
+    def __init__(
+        self, coordinator: RssParserCoordinator, entry: RssParserConfigEntry
+    ) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_discarded_count"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=str(entry.data[CONF_FEED_NAME]),
+            manufacturer="RSS Parser",
+            model="RSS/Atom Feed",
+        )
+
+    @property
+    def native_value(self) -> int:
+        return self.coordinator.data.discarded_count
