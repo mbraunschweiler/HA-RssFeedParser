@@ -87,6 +87,7 @@ class CoordinatorData:
     latest_entry: FeedEntry | None
     new_entries: tuple[FeedEntry, ...]
     feed_title: str
+    discarded_count: int = 0
 
 
 def newest_entries(entries: tuple[FeedEntry, ...], limit: int) -> tuple[FeedEntry, ...]:

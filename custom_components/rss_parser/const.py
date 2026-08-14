@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Final
 
 DOMAIN: Final = "rss_parser"
-PLATFORMS: Final = ["sensor"]
+PLATFORMS: Final = ["sensor", "button"]
 
 CONF_FEED_NAME: Final = "feed_name"
 CONF_FEED_URL: Final = "feed_url"
@@ -46,3 +46,6 @@ MAX_SEEN_IDS: Final = 500
 STORAGE_VERSION: Final = 1
 
 EVENT_NEW_ENTRY: Final = "rss_parser_new_entry"
+
+REPAIR_ISSUE_FEED_UNAVAILABLE: Final = "feed_unavailable"
+MAX_CONSECUTIVE_FAILURES: Final = 3

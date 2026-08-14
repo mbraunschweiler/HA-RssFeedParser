@@ -77,10 +77,27 @@
     }
   },
   "entity": {
+    "button": {
+      "refresh": {
+        "name": "Aktualisieren"
+      }
+    },
     "sensor": {
       "latest_entry": {
         "name": "Letzter Beitrag"
+      },
+      "new_entries_count": {
+        "name": "Neue Beitr\u00e4ge"
+      },
+      "discarded_count": {
+        "name": "Verworfene Beitr\u00e4ge"
       }
+    }
+  },
+  "issues": {
+    "feed_unavailable": {
+      "title": "Feed \u201e{feed_name}\u201c nicht erreichbar",
+      "description": "Der Feed \u201e{feed_name}\u201c ({feed_url}) konnte nach mehreren aufeinanderfolgenden Versuchen nicht abgerufen werden. Pr\u00fcfe die URL und die Netzwerkverbindung und konfiguriere den Feed neu."
     }
   }
 }

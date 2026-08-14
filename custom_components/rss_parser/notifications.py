@@ -48,6 +48,11 @@ async def async_send_notifications(
 ) -> None:
     """Send new entries to configured notify entities."""
     if not entries or not options.get(CONF_NOTIFICATIONS_ENABLED, False):
+        _LOGGER.debug(
+            "Skipping notifications: entries=%d, enabled=%s",
+            len(entries),
+            options.get(CONF_NOTIFICATIONS_ENABLED, False),
+        )
         return
     targets = options.get(CONF_NOTIFY_TARGETS, [])
     if isinstance(targets, str):
